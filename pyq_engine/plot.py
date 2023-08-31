@@ -11,6 +11,7 @@ from pathlib import Path
 
 
 def samples_to_psd(samples, sample_rate, lo=None):
+    samples = samples * np.hamming(len(samples))
     psd = 10 * np.log10(np.abs(np.fft.fftshift(np.fft.fft(samples)))**2)
     f = np.linspace(sample_rate/-2, sample_rate/2, len(psd))
 
