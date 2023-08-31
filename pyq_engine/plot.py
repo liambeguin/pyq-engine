@@ -125,7 +125,10 @@ app.layout = dbc.Container(
             n_clicks=0,
         ),
         dbc.Button(
-            "Toggle Annotations",
+            [
+                "Toggle Annotations",
+                dbc.Badge(id='annotations-count', color='danger', className="ms-1"),
+            ],
             id="annotations-button",
             className="me-1",
             color="primary",
@@ -217,15 +220,18 @@ def toggle_collapse_annotations(n, is_open):
     return is_open
 
 @app.callback(
-    Output("annotations", "children"),
+    [
+        Output("annotations", "children"),
+        Output("annotations-count", "children"),
+    ],
     Input('annotations-store', 'data'),
 )
 def update_annotations(annotations):
     if annotations is None:
-        return 'open file to display annotations'
+        return 'open file to display annotations', ''
 
     if len(annotations) == 0:
-        return 'Collection contains no annotations'
+        return 'Collection contains no annotations', ''
 
     cards = []
     for i, a in enumerate(annotations):
@@ -247,7 +253,7 @@ def update_annotations(annotations):
             ],
         ))
 
-    return cards
+    return cards, str(len(annotations))
 
 
 @app.callback(
