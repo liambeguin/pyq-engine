@@ -4,6 +4,8 @@ import dash_daq as daq
 import plotly.express as px
 import plotly.graph_objs as go
 
+import base64
+import io
 import sigmf
 import time
 import numpy as np
@@ -42,7 +44,7 @@ controls = dbc.Card(
     [
         html.Div(
             [
-                dbc.Label('Click to select SigMF metadata file'),
+                dbc.Label('Click to select SigMF archive file'),
                 dcc.Upload(
                     id='filename',
                     children=html.Div([
@@ -172,11 +174,19 @@ def render_tab_content(active_tab, data):
         Output("cursor", "value"),
     ],
     Input('filename', 'filename'),
+    Input('filename', 'contents'),
 )
-def update_cursor(filename):
-    count = sigmf.sigmffile.fromfile(filename).sample_count if filename else 50
+def update_cursor(filename, contents):
+    count = 50
 
-    return count, [0, count]
+    if filename:
+        content_type, content_string = contents.split(',')
+        d = io.BytesIO(base64.b64decode(content_string))
+        arc = sigmf.SigMFArchiveReader(archive_buffer=d)
+        count = arc.sigmffile.shape[0]
+
+    return count, [0, count // 10]
+
 
 @app.callback(
     Output("metadata-collapse", "is_open"),
@@ -265,12 +275,13 @@ def update_annotations(annotations):
     ],
     [
         Input('filename', 'filename'),
+        Input('filename', 'contents'),
         Input('fft-size', 'value'),
         Input('rf-freq', 'on'),
         Input('cursor', 'value'),
     ],
 )
-def generate_graphs(filename, fft_size, rf_freq, cursor):
+def generate_graphs(filename, contents, fft_size, rf_freq, cursor):
     """
     This callback generates three simple graphs from random data.
     """
@@ -280,16 +291,21 @@ def generate_graphs(filename, fft_size, rf_freq, cursor):
 
     graphs = {}
 
-    sig = sigmf.sigmffile.fromfile(filename)
+    content_type, content_string = contents.split(',')
+    d = io.BytesIO(base64.b64decode(content_string))
+    arc = sigmf.SigMFArchiveReader(archive_buffer=d)
+    sig = arc.sigmffile
+
     metadata = sig.get_global_info()
     annotations =sig.get_annotations()
 
-    samples = sig.read_samples()
-    sample_rate = sig.get_global_info()['core:sample_rate']
+    samples = sig[:]
+    sample_count = sig.shape[0]
+    sample_rate = metadata['core:sample_rate']
     lo = sig.get_captures()[0]['core:frequency'] if rf_freq else None
 
     freq, spectrogram = sigmf_to_spectrogram(samples, sample_rate, fft_size=fft_size, lo=lo)
-    ytime = np.linspace(0.0, float(sig.sample_count / sample_rate), num=sig.sample_count // fft_size)
+    ytime = np.linspace(0.0, float(sample_count / sample_rate), num=sample_count // fft_size)
 
     graphs['spectrogram'] = px.imshow(
         spectrogram,
