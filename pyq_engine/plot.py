@@ -44,12 +44,20 @@ controls = dbc.Card(
     [
         html.Div(
             [
-                dbc.Label('Click to select SigMF archive file'),
                 dcc.Upload(
                     id='filename',
                     children=html.Div([
-                        html.A('Select Files')
+                        html.A('Upload SigMFArchive')
                     ]),
+                    style={
+                        'width': '100%',
+                        'height': '60px',
+                        'lineHeight': '60px',
+                        'borderWidth': '1px',
+                        'borderStyle': 'dashed',
+                        'borderRadius': '5px',
+                        'textAlign': 'center',
+                    },
                 ),
             ],
         ),
