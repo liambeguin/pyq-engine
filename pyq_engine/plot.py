@@ -311,6 +311,7 @@ def generate_graphs(filename, contents, fft_size, rf_freq, cursor):
         spectrogram,
         x=freq,
         y=ytime,
+        title=filename,
         aspect='auto',
         labels={
             'x': 'Frequency [Hz]',
@@ -329,12 +330,14 @@ def generate_graphs(filename, contents, fft_size, rf_freq, cursor):
     d['Frequency [Hz]'], d['PSD [dB]'] = samples_to_psd(samples[cursor[0]:cursor[1]], sample_rate, lo=lo)
     graphs['frequency'] = px.line(
         d,
+        title=filename,
         x='Frequency [Hz]',
         y='PSD [dB]',
     )
     graphs['frequency'].update_layout(hovermode='x unified')
 
     graphs['iq'] = px.scatter(
+        title=filename,
         x=np.real(samples[cursor[0]:cursor[1]]),
         y=np.imag(samples[cursor[0]:cursor[1]]),
     )
