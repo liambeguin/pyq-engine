@@ -345,4 +345,4 @@ def generate_graphs(filename, contents, fft_size, rf_freq, cursor):
     return graphs, metadata, annotations
 
 
-app.run_server(debug=True)
+app.run(debug=True, host='0.0.0.0')
