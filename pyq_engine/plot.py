@@ -282,6 +282,31 @@ def update_annotations(annotations):
     return cards, str(len(annotations))
 
 
+def draw_annotation(figure, annotation, frequency=None, time=None):
+    y0 = annotation['core:sample_start']
+    y1 = annotation['core:sample_count']
+
+    if time is not None:
+        y0 = time[y0]
+        y1 = time[y1]
+
+    if 'frequency_lower_edge' in annotation.keys():
+        x0 = annotation['frequency_lower_edge']
+        x1 = annotation['frequency_upper_edge']
+    else:
+        x0 = frequency[0]
+        x1 = frequency[-1]
+
+    figure.add_trace(go.Scatter(
+        x=[x0, x0, x1, x1, x0],
+        y=[y0, y1, y1, y0, y0],
+        fill='toself',
+        mode='lines',
+        name=annotation['label'],
+        showlegend=False,
+    ))
+
+
 @app.callback(
     [
         Output('graph-store', 'data'),
@@ -340,6 +365,9 @@ def generate_graphs(filename, contents, fft_size, rf_freq, cursor):
             'colorscale': 'viridis',
         },
     )
+
+    for ann in annotations:
+        draw_annotation(figure=graphs['spectrogram'], annotation=ann, frequency=freq, time=ytime)
 
     d = {}
     d['Frequency [Hz]'], d['PSD [dB]'] = samples_to_psd(samples[cursor[0]:cursor[1]], sample_rate, lo=lo)
