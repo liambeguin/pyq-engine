@@ -322,7 +322,6 @@ def generate_graphs(filename, contents, fft_size, rf_freq, cursor):
         hovermode='x unified',
         coloraxis={
             'colorscale': 'viridis',
-            'showscale': False,
         },
     )
 
