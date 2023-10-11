@@ -94,6 +94,31 @@ controls = dbc.Card(
             ],
         ),
         html.Hr(),
+        dbc.Button(
+            "Toggle Metadata",
+            id="metadata-button",
+            className="me-1",
+            color="primary",
+            n_clicks=0,
+            style={
+                'width': '100%',
+                'margin-bottom': '10px',
+            },
+        ),
+        dbc.Button(
+            [
+                "Toggle Annotations",
+                dbc.Badge(id='annotations-count', color='danger', className="ms-1"),
+            ],
+            id="annotations-button",
+            className="me-1",
+            color="primary",
+            n_clicks=0,
+            style={
+                'width': '100%',
+                'margin-bottom': '10px',
+            },
+        ),
     ],
     body=True,
 )
@@ -127,23 +152,6 @@ app.layout = dbc.Container(
                 dbc.Col(tabs, md=9),
             ],
             align='center',
-        ),
-        dbc.Button(
-            "Toggle Metadata",
-            id="metadata-button",
-            className="me-1",
-            color="primary",
-            n_clicks=0,
-        ),
-        dbc.Button(
-            [
-                "Toggle Annotations",
-                dbc.Badge(id='annotations-count', color='danger', className="ms-1"),
-            ],
-            id="annotations-button",
-            className="me-1",
-            color="primary",
-            n_clicks=0,
         ),
         dbc.Collapse(
             dbc.Card(dbc.CardBody(id='metadata')),
@@ -224,7 +232,6 @@ def update_metadata(metadata):
                 ],
             ),
         )
-
 
     return dbc.Container(children)
 
