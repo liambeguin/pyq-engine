@@ -11,30 +11,7 @@ import time
 import numpy as np
 from pathlib import Path
 
-
-def samples_to_psd(samples, sample_rate, lo=None):
-    samples = samples * np.hamming(len(samples))
-    psd = 10 * np.log10(np.abs(np.fft.fftshift(np.fft.fft(samples)))**2)
-    f = np.linspace(sample_rate/-2, sample_rate/2, len(psd))
-
-    if lo is not None:
-        f += lo
-
-    return f, psd
-
-
-def sigmf_to_spectrogram(samples, sample_rate, fft_size=1024, lo=None):
-    num_rows = len(samples) // fft_size # // is an integer division which rounds down
-    spectrogram = np.zeros((num_rows, fft_size))
-
-    for i in range(num_rows):
-        start = i * fft_size
-        stop = (i + 1) * fft_size
-
-        f, spectrogram[i,:] = samples_to_psd(samples[start:stop], sample_rate, lo)
-
-    return f, spectrogram
-
+from pyq_engine import utils
 
 
 fft_size_options = [2**i for i in range(5, 15)]
@@ -342,9 +319,9 @@ def generate_graphs(filename, contents, fft_size, rf_freq, cursor):
     samples = sig[:]
     sample_count = sig.shape[0]
     sample_rate = metadata['core:sample_rate']
-    lo = sig.get_captures()[0]['core:frequency'] if rf_freq else None
+    fc = sig.get_captures()[0]['core:frequency'] if rf_freq else None
 
-    freq, spectrogram = sigmf_to_spectrogram(samples, sample_rate, fft_size=fft_size, lo=lo)
+    freq, spectrogram = utils.sigmf_to_spectrogram(samples, sample_rate, fft_size=fft_size, fc=fc)
     ytime = np.linspace(0.0, float(sample_count / sample_rate), num=sample_count // fft_size)
 
     graphs['spectrogram'] = px.imshow(
@@ -370,7 +347,7 @@ def generate_graphs(filename, contents, fft_size, rf_freq, cursor):
         draw_annotation(figure=graphs['spectrogram'], annotation=ann, frequency=freq, time=ytime)
 
     d = {}
-    d['Frequency [Hz]'], d['PSD [dB]'] = samples_to_psd(samples[cursor[0]:cursor[1]], sample_rate, lo=lo)
+    d['Frequency [Hz]'], d['PSD [dB]'] = utils.samples_to_psd(samples[cursor[0]:cursor[1]], sample_rate, fc=fc)
     graphs['frequency'] = px.line(
         d,
         title=filename,
