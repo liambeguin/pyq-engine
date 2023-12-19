@@ -178,7 +178,7 @@ def update_cursor(filename, contents):
         arc = sigmf.SigMFArchiveReader(archive_buffer=d)
         count = arc.sigmffile.shape[0]
 
-    return count, [0, count // 10]
+    return count, [0, count]
 
 
 @app.callback(
