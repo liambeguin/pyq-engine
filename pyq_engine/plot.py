@@ -336,32 +336,41 @@ def generate_graphs(filename, contents, fft_size, rf_freq, analyze, cursor):
         title=filename,
         aspect='auto',
         labels={
-            'x': 'Frequency [Hz]',
+            'x': 'Frequency',
             'y': 'Time',
-            'color': 'PSD [dB]',
+            'color': 'PSD',
         },
     )
     graphs['spectrogram'].update_layout(
         hovermode='x unified',
+        xaxis_tickformat='~s',
+        xaxis_ticksuffix='Hz',
+        yaxis_tickformat='~s',
+        yaxis_ticksuffix='s',
         coloraxis={
             'colorscale': 'viridis',
         },
+    )
+
+    graphs['spectrogram'].update_coloraxes(
+        colorbar_tickformat='~s',
+        colorbar_ticksuffix='dB',
     )
 
     for ann in annotations:
         draw_annotation(figure=graphs['spectrogram'], annotation=ann, frequency=freq, time=ytime)
 
     d = {}
-    d['Frequency [Hz]'], d['PSD [dB]'] = utils.samples_to_psd(samples[cursor[0]:cursor[1]], sample_rate, fc=fc)
+    d['Frequency'], d['PSD'] = utils.samples_to_psd(samples[cursor[0]:cursor[1]], sample_rate, fc=fc)
     graphs['frequency'] = px.line(
         d,
         title=filename,
-        x='Frequency [Hz]',
-        y='PSD [dB]',
+        x='Frequency',
+        y='PSD',
     )
 
     if analyze:
-        peaks = utils.get_peaks(d['Frequency [Hz]'], d['PSD [dB]'], prominence=5)
+        peaks = utils.get_peaks(d['Frequency'], d['PSD'], prominence=5)
 
         peaks['y'] = peaks['dBs'] - peaks['prominences'] / 2
         peaks['xerr'] = peaks['right freq'] - peaks['center freq']
@@ -415,7 +424,13 @@ def generate_graphs(filename, contents, fft_size, rf_freq, analyze, cursor):
             ),
         )
 
-    graphs['frequency'].update_layout(hovermode='x unified')
+    graphs['frequency'].update_layout(
+        hovermode='x unified',
+        xaxis_tickformat='~s',
+        xaxis_ticksuffix='Hz',
+        yaxis_tickformat='~s',
+        yaxis_ticksuffix='dB',
+    )
 
     graphs['iq'] = px.scatter(
         title=filename,
