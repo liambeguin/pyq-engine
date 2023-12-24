@@ -314,9 +314,13 @@ def generate_graphs(filename, contents, fft_size, rf_freq, cursor):
     sig = arc.sigmffile
 
     metadata = sig.get_global_info()
+    if 'core:extensions' in metadata:
+        del metadata['core:extensions']
+
     annotations =sig.get_annotations()
 
     samples = sig[:]
+
     sample_count = sig.shape[0]
     sample_rate = metadata['core:sample_rate']
     fc = sig.get_captures()[0]['core:frequency'] if rf_freq else None
