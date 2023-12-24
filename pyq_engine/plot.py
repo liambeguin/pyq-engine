@@ -52,8 +52,8 @@ controls = dbc.Card(
         html.Hr(),
         html.Div(
             [
-                dbc.Label('RF Frequencies'),
-                daq.BooleanSwitch(id='rf-freq', on=True),
+                daq.BooleanSwitch(label='RF Frequencies', id='rf-freq', on=True),
+                daq.BooleanSwitch(label='Analysis', id='do-analysis', on=True),
             ],
         ),
         html.Hr(),
@@ -295,10 +295,11 @@ def draw_annotation(figure, annotation, frequency=None, time=None):
         Input('filename', 'contents'),
         Input('fft-size', 'value'),
         Input('rf-freq', 'on'),
+        Input('do-analysis', 'on'),
         Input('cursor', 'value'),
     ],
 )
-def generate_graphs(filename, contents, fft_size, rf_freq, cursor):
+def generate_graphs(filename, contents, fft_size, rf_freq, analyze, cursor):
     """
     This callback generates three simple graphs from random data.
     """
@@ -358,6 +359,62 @@ def generate_graphs(filename, contents, fft_size, rf_freq, cursor):
         x='Frequency [Hz]',
         y='PSD [dB]',
     )
+
+    if analyze:
+        peaks = utils.get_peaks(d['Frequency [Hz]'], d['PSD [dB]'], prominence=5)
+
+        peaks['y'] = peaks['dBs'] - peaks['prominences'] / 2
+        peaks['xerr'] = peaks['right freq'] - peaks['center freq']
+        peaks['xerrminus'] = peaks['center freq'] - peaks['left freq']
+        peaks['yerr'] = peaks['prominences'] / 2
+
+        graphs['frequency'].add_traces(
+            go.Scatter(
+                x=peaks['center freq'],
+                y=peaks['dBs'],
+                name='peaks',
+                mode='markers',
+                marker=dict(
+                    size=15,
+                    color='DarkOrange',
+                    symbol='circle-open-dot',
+                    line=dict(
+                        width=2,
+                    ),
+                ),
+                hovertemplate='<br>dB=%{y:.2f}<br>fc=%{x:.3e}<br>%{text}',
+                text=[f'bw={bw:.3e}<br>prominence={snr:.2}' for bw, snr in zip(peaks['bandwidth'], peaks['prominences'])],
+            ),
+        )
+
+        graphs['frequency'].add_traces(
+            go.Scatter(
+                x=peaks['center freq'],
+                y=peaks['y'],
+                name='peaks',
+                mode='markers',
+                showlegend=False,
+                hoverinfo='skip',
+                marker=dict(
+                    size=1,
+                    color='red',
+                    line=dict(
+                        width=2,
+                    ),
+                ),
+                error_x=dict(
+                    type='data',
+                    symmetric=False,
+                    array=peaks['xerr'],
+                    arrayminus=peaks['xerrminus'],
+                ),
+                error_y=dict(
+                    type='data',
+                    array=peaks['yerr'],
+                ),
+            ),
+        )
+
     graphs['frequency'].update_layout(hovermode='x unified')
 
     graphs['iq'] = px.scatter(

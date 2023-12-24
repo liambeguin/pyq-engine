@@ -1,3 +1,4 @@
+import pandas as pd
 import numpy as np
 from scipy import signal
 
@@ -20,3 +21,42 @@ def sigmf_to_spectrogram(samples, sample_rate, fft_size=1024, fc=0):
         f, spectrogram[i,:] = samples_to_psd(samples[start:stop], sample_rate, fc, nperseg=fft_size)
 
     return f, spectrogram
+
+
+def get_peaks(freqs: np.ndarray, fftdb: np.ndarray, bandwidth: float=None, **kwargs) -> pd.DataFrame:
+    '''Get FFT peaks using signal.find_peaks()
+
+    Args:
+        freqs:
+            x-axis frequency range, usually the output of create_fft()
+        fftdb:
+            y-axis power data, usually the output of create_fft()
+        bandwidth:
+            required minimal peak bandwidth in Hz, used to calculate width
+            passed to signal.find_peaks()
+        kwargs:
+            passed down to signal.find_peaks()
+
+    Returns:
+        A DataFrame with peak properties.
+    '''
+    if bandwidth is not None:
+        f_res = freqs[1] - freqs[0]
+        kwargs['width'] = bandwidth / f_res
+
+    # add 'width' if not present, required to get signal.find_peaks() to output
+    # width information
+    if 'width' not in kwargs.keys():
+        kwargs['width'] = 1
+
+    peak_idxs, props = signal.find_peaks(fftdb, **kwargs)
+
+    df = pd.DataFrame(props)
+    df['indexes'] = peak_idxs
+    df['center freq'] = freqs[peak_idxs]
+    df['left freq'] = freqs[[int(i) for i in props['left_ips']]]
+    df['right freq'] = freqs[[int(i) for i in props['right_ips']]]
+    df['bandwidth'] = df['right freq'] - df['left freq']
+    df['dBs'] = fftdb[peak_idxs]
+
+    return df.sort_values('dBs', ascending=False)
