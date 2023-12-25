@@ -78,20 +78,7 @@ controls = dbc.Card(
         ),
         html.Hr(),
         components.metadata,
-        dbc.Button(
-            [
-                "Toggle Annotations",
-                dbc.Badge(id='annotations-count', color='danger', className="ms-1"),
-            ],
-            id="annotations-button",
-            className="me-1",
-            color="primary",
-            n_clicks=0,
-            style={
-                'width': '100%',
-                'margin-bottom': '10px',
-            },
-        ),
+        components.annotations,
     ],
     body=True,
 )
@@ -119,7 +106,6 @@ app.layout = dbc.Container(
         html.H1('PYQ Engine'),
         html.Hr(),
         dcc.Store(id='graph-store'),
-        dcc.Store(id='annotations-store'),
         dbc.Stack(
             [
                 dbc.Col(controls, width=3),
@@ -127,14 +113,10 @@ app.layout = dbc.Container(
             ],
             direction='horizontal',
         ),
-        dbc.Collapse(
-            dbc.Card(dbc.CardBody(id='annotations')),
-            id="annotations-collapse",
-            is_open=False,
-        ),
     ],
     fluid=True,
 )
+
 
 @app.callback(
     Output("tab-content", "children"),
@@ -171,53 +153,6 @@ def update_cursor(filename, contents):
         count = arc.sigmffile.shape[0]
 
     return count, [0, count]
-
-
-@app.callback(
-    Output("annotations-collapse", "is_open"),
-    [Input("annotations-button", "n_clicks")],
-    [State("annotations-collapse", "is_open")],
-)
-def toggle_collapse_annotations(n, is_open):
-    if n:
-        return not is_open
-    return is_open
-
-@app.callback(
-    [
-        Output("annotations", "children"),
-        Output("annotations-count", "children"),
-    ],
-    Input('annotations-store', 'data'),
-)
-def update_annotations(annotations):
-    if annotations is None:
-        return 'open file to display annotations', ''
-
-    if len(annotations) == 0:
-        return 'Collection contains no annotations', ''
-
-    cards = []
-    for i, a in enumerate(annotations):
-        cards.append(dbc.Card(
-            [
-                dbc.CardBody(
-                    className='card-text',
-                    children=[
-                        html.H4(f'Annotation {i}', className='card-title'),
-                    ] + [
-                        dbc.Row(
-                            [
-                                dbc.Col(dbc.Label(k)),
-                                dbc.Col(dbc.Label(v)),
-                            ],
-                        ) for k, v in a.items()
-                    ],
-                ),
-            ],
-        ))
-
-    return cards, str(len(annotations))
 
 
 def draw_annotation(figure, annotation, frequency=None, time=None):
