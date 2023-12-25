@@ -111,10 +111,12 @@ tabs = dbc.Container(
             ],
             id='tabs',
             active_tab='spectrogram',
-            className="p-0",
+            className="m-0",
         ),
         html.Div(id="tab-content", className="p-0"),
     ],
+    className="m-0",
+    fluid=True,
 )
 
 app.layout = dbc.Container(
@@ -124,12 +126,12 @@ app.layout = dbc.Container(
         dcc.Store(id='graph-store'),
         dcc.Store(id='metadata-store'),
         dcc.Store(id='annotations-store'),
-        dbc.Row(
+        dbc.Stack(
             [
-                dbc.Col(controls, md=3),
-                dbc.Col(tabs, md=9),
+                dbc.Col(controls, width=3),
+                dbc.Col(tabs, className='m-0'),
             ],
-            align='center',
+            direction='horizontal',
         ),
         dbc.Collapse(
             dbc.Card(dbc.CardBody(id='metadata')),
