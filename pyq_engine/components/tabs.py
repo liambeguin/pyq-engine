@@ -7,7 +7,8 @@ from pyq_engine import utils
 from pyq_engine.components import plot
 
 
-tabs = html.Div(
+def tabs(default='spectrogram'):
+    return html.Div(
     [
         dcc.Store(id='graph-store'),
         dbc.Tabs(
@@ -17,7 +18,7 @@ tabs = html.Div(
                 dbc.Tab(label='IQ Plot', tab_id='iq'),
             ],
             id='tabs',
-            active_tab='spectrogram',
+            active_tab=default,
         ),
         html.Div(id="tab-content"),
     ],

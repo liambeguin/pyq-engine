@@ -9,6 +9,7 @@ from pyq_engine import components
 def main():
     parser = argparse.ArgumentParser('pyq-engine')
     parser.add_argument('--debug', default=False, action='store_true')
+    parser.add_argument('--default-tab', default='spectrogram', choices=['spectrogram', 'frequency', 'iq'])
     options = parser.parse_args()
 
     app = Dash(
@@ -40,7 +41,7 @@ def main():
             dbc.Row(
                 [
                     dbc.Col(controls, class_name='m-0 col-2'),
-                    dbc.Col(components.tabs, class_name='m-0 col-10'),
+                    dbc.Col(components.tabs(options.default_tab), class_name='m-0 col-10'),
                 ],
                 align='top',
             ),
