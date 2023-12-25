@@ -1,4 +1,5 @@
 import dash_bootstrap_components as dbc
+import argparse
 from dash import Dash, dcc, html, Input, Output, State
 import dash_daq as daq
 import plotly.express as px
@@ -441,4 +442,8 @@ def generate_graphs(filename, contents, fft_size, rf_freq, analyze, cursor):
     return graphs, metadata, annotations
 
 
-app.run(debug=True, host='0.0.0.0')
+def main():
+    parser = argparse.ArgumentParser('pyq-engine')
+    parser.add_argument('--debug', default=False, action='store_true')
+    options = parser.parse_args()
+    app.run(debug=options.debug, host='0.0.0.0')
