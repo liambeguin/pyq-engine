@@ -38,7 +38,7 @@ controls = dbc.Card(
     body=True,
 )
 
-tabs = dbc.Container(
+tabs = html.Div(
     [
         dbc.Tabs(
             [
@@ -48,28 +48,24 @@ tabs = dbc.Container(
             ],
             id='tabs',
             active_tab='spectrogram',
-            className="m-0",
         ),
-        html.Div(id="tab-content", className="p-0"),
+        html.Div(id="tab-content"),
     ],
-    className="m-0",
-    fluid=True,
 )
 
-app.layout = dbc.Container(
+app.layout = html.Div(
     [
         html.H1('PYQ Engine'),
         html.Hr(),
         dcc.Store(id='graph-store'),
-        dbc.Stack(
+        dbc.Row(
             [
-                dbc.Col(controls, width=3),
-                dbc.Col(tabs, className='m-0'),
+                dbc.Col(controls, class_name='m-0 col-2'),
+                dbc.Col(tabs, class_name='m-0 col-10'),
             ],
-            direction='horizontal',
+            align='top',
         ),
     ],
-    fluid=True,
 )
 
 
