@@ -7,7 +7,7 @@ annotations = html.Div(
         dcc.Store(id='annotations-store'),
         dbc.Button(
             [
-                "Toggle Annotations",
+                "Annotations",
                 dbc.Badge(id='annotations-count', color='danger', className="ms-1"),
             ],
             id="annotations-button",

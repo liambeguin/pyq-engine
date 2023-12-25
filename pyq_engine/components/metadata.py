@@ -5,7 +5,7 @@ metadata = html.Div(
     [
         dcc.Store(id='metadata-store'),
         dbc.Button(
-            "Toggle Metadata",
+            "Metadata",
             id="metadata-button",
             className="me-1",
             color="primary",
