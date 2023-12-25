@@ -13,6 +13,18 @@ def load_sigmf_contents(contents):
     return arc.sigmffile
 
 
+def serialize_samples(samples: np.ndarray) -> dict[str, str]:
+    buffer = base64.b64encode(samples).decode('utf-8')
+    dtype = str(samples.dtype)
+    return {'dtype': dtype, 'buffer': buffer }
+
+
+def deserialize_samples(store: dict[str, str]) -> np.ndarray:
+    buffer = base64.b64decode(store['buffer'].encode('utf-8'))
+    dtype = store['dtype']
+    return np.frombuffer(buffer, dtype=dtype)
+
+
 def samples_to_psd(samples, sample_rate, fc=0, nperseg=1024*8):
     _, psd = signal.welch(samples, fs=sample_rate, scaling='spectrum', return_onesided=False, nperseg=nperseg)
     psd_db = 10 * np.log10(np.abs((np.fft.fftshift((psd)))/(len(psd))))
