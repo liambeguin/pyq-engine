@@ -6,7 +6,8 @@ import plotly.express as px
 from pyq_engine import utils
 
 
-def IQ(samples, title=None):
+def IQ(samples, title=None, decimate=10):
+    samples = samples[::decimate]
     return px.scatter(
         x=np.real(samples),
         y=np.imag(samples),
