@@ -13,6 +13,7 @@ import numpy as np
 from pathlib import Path
 
 from pyq_engine import utils
+from pyq_engine import components
 
 
 fft_size_options = [2**i for i in range(5, 15)]
@@ -76,17 +77,7 @@ controls = dbc.Card(
             ],
         ),
         html.Hr(),
-        dbc.Button(
-            "Toggle Metadata",
-            id="metadata-button",
-            className="me-1",
-            color="primary",
-            n_clicks=0,
-            style={
-                'width': '100%',
-                'margin-bottom': '10px',
-            },
-        ),
+        components.metadata,
         dbc.Button(
             [
                 "Toggle Annotations",
@@ -128,7 +119,6 @@ app.layout = dbc.Container(
         html.H1('PYQ Engine'),
         html.Hr(),
         dcc.Store(id='graph-store'),
-        dcc.Store(id='metadata-store'),
         dcc.Store(id='annotations-store'),
         dbc.Stack(
             [
@@ -136,11 +126,6 @@ app.layout = dbc.Container(
                 dbc.Col(tabs, className='m-0'),
             ],
             direction='horizontal',
-        ),
-        dbc.Collapse(
-            dbc.Card(dbc.CardBody(id='metadata')),
-            id="metadata-collapse",
-            is_open=False,
         ),
         dbc.Collapse(
             dbc.Card(dbc.CardBody(id='annotations')),
@@ -187,37 +172,6 @@ def update_cursor(filename, contents):
 
     return count, [0, count]
 
-
-@app.callback(
-    Output("metadata-collapse", "is_open"),
-    [Input("metadata-button", "n_clicks")],
-    [State("metadata-collapse", "is_open")],
-)
-def toggle_collapse_metadata(n, is_open):
-    if n:
-        return not is_open
-    return is_open
-
-@app.callback(
-    Output("metadata", "children"),
-    Input('metadata-store', 'data'),
-)
-def update_metadata(metadata):
-    if metadata is None:
-        return 'open file to display metadata'
-
-    children = []
-    for k, v in metadata.items():
-        children.append(
-            dbc.Row(
-                [
-                    dbc.Col(dbc.Label(k)),
-                    dbc.Col(dbc.Label(v)),
-                ],
-            ),
-        )
-
-    return dbc.Container(children)
 
 @app.callback(
     Output("annotations-collapse", "is_open"),
