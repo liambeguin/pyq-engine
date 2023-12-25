@@ -8,15 +8,31 @@ from pyq_engine import utils
 
 def IQ(samples, title=None, decimate=10):
     samples = samples[::decimate]
-    return px.scatter(
-        x=np.real(samples),
-        y=np.imag(samples),
+
+    fig = px.scatter(
+        x=np.real(samples) / np.max(np.real(samples)),
+        y=np.imag(samples) / np.max(np.imag(samples)),
         title=title,
         labels={
-            'x': 'Re',
-            'y': 'Im',
+            'x': 'I',
+            'y': 'Q',
         },
     )
+
+    fig.add_shape(
+        type='circle',
+        xref='x',
+        yref='y',
+        x0=-1, y0=-1, x1=1, y1=1,
+        name='unit circle',
+    )
+
+    fig.update_layout(
+        hovermode='closest',
+        showlegend=True,
+    )
+
+    return fig
 
 
 def draw_spectrogram_annotation(figure, annotation, frequency=None, time=None):
