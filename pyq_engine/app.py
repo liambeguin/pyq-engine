@@ -16,7 +16,6 @@ from pyq_engine import utils
 from pyq_engine import components
 
 
-fft_size_options = [2**i for i in range(5, 15)]
 app = Dash(
     __name__,
     title='PYQ-Engine',
@@ -25,57 +24,13 @@ app = Dash(
 
 controls = dbc.Card(
     [
-        html.Div(
-            [
-                dcc.Upload(
-                    id='filename',
-                    children=html.Div([
-                        html.A('Upload SigMFArchive')
-                    ]),
-                    style={
-                        'width': '100%',
-                        'height': '60px',
-                        'lineHeight': '60px',
-                        'borderWidth': '1px',
-                        'borderStyle': 'dashed',
-                        'borderRadius': '5px',
-                        'textAlign': 'center',
-                    },
-                ),
-            ],
-        ),
+        components.controls.upload,
         html.Hr(),
-        html.Div(
-            [
-                dbc.Label('FFT Size'),
-                dcc.Dropdown(
-                    id='fft-size',
-                    options=fft_size_options,
-                    value=1024,
-                ),
-            ],
-        ),
+        components.controls.fft_size,
         html.Hr(),
-        html.Div(
-            [
-                daq.BooleanSwitch(label='RF Frequencies', id='rf-freq', on=True),
-                daq.BooleanSwitch(label='Analysis', id='do-analysis', on=True),
-            ],
-        ),
+        components.controls.switches,
         html.Hr(),
-        html.Div(
-            [
-                dbc.Label('Cursor'),
-                dcc.RangeSlider(
-                    0, 50,
-                    value=[10, 20],
-                    marks=None,
-                    allowCross=False,
-                    tooltip={'placement': 'bottom', 'always_visible': True},
-                    id='cursor',
-                ),
-            ],
-        ),
+        components.controls.freq_cursor,
         html.Hr(),
         components.metadata,
         components.annotations,
@@ -133,26 +88,6 @@ def render_tab_content(active_tab, data):
             return dcc.Graph(figure=data[active_tab])
 
     return "No tab selected"
-
-
-@app.callback(
-    [
-        Output("cursor", "max"),
-        Output("cursor", "value"),
-    ],
-    Input('filename', 'filename'),
-    Input('filename', 'contents'),
-)
-def update_cursor(filename, contents):
-    count = 50
-
-    if filename:
-        content_type, content_string = contents.split(',')
-        d = io.BytesIO(base64.b64decode(content_string))
-        arc = sigmf.SigMFArchiveReader(archive_buffer=d)
-        count = arc.sigmffile.shape[0]
-
-    return count, [0, count]
 
 
 def draw_annotation(figure, annotation, frequency=None, time=None):
