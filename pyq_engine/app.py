@@ -27,7 +27,7 @@ def main():
             html.Hr(),
             components.controls.switches,
             html.Hr(),
-            components.controls.freq_cursor,
+            components.controls.sample_slicer,
             html.Hr(),
             components.metadata,
             components.annotations,

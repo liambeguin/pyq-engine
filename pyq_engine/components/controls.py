@@ -45,9 +45,9 @@ switches = html.Div(
     ],
 )
 
-freq_cursor = html.Div(
+sample_slicer = html.Div(
     [
-        dbc.Label('Frequency Cursor'),
+        dbc.Label('Sample Slice'),
         dcc.RangeSlider(
             0, 50,
             value=[10, 20],
@@ -69,10 +69,10 @@ freq_cursor = html.Div(
     Input('filename', 'contents'),
 )
 def update_freq_cursor(filename, contents):
-    count = 50
+    if filename is None:
+        return 5000, [0, 5000]
 
-    if filename:
-        sig = utils.load_sigmf_contents(contents)
-        count = sig.shape[0]
+    sig = utils.load_sigmf_contents(contents)
+    count = sig.shape[0]
 
     return count, [0, count]
