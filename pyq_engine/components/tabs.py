@@ -15,6 +15,7 @@ def tabs(default='spectrogram'):
             [
                 dbc.Tab(label='Spectrogram', tab_id='spectrogram'),
                 dbc.Tab(label='Frequency', tab_id='frequency'),
+                dbc.Tab(label='Time', tab_id='time'),
                 dbc.Tab(label='IQ Plot', tab_id='iq'),
             ],
             id='tabs',
@@ -70,6 +71,7 @@ def generate_graphs(filename, store, metadata, fft_size, rf_freq, analyze, curso
     graphs = {}
     graphs['spectrogram'] = plot.spectrogram(samples, metadata, fc=fc, fft_size=fft_size, title=filename)
     graphs['frequency'] = plot.frequencies(samples, metadata, fc=fc, title=filename, analyze=analyze)
+    graphs['time'] = plot.time(samples, metadata, title=filename)
     graphs['iq'] = plot.IQ(samples, title=filename)
 
     return graphs

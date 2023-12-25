@@ -35,6 +35,34 @@ def IQ(samples, title=None, decimate=10):
     return fig
 
 
+def time(samples, metadata, title=None):
+    sample_count = len(samples)
+    sample_rate = metadata['global']['core:sample_rate']
+    xtime = np.linspace(0.0, float(sample_count / sample_rate), num=sample_count)
+
+    fig = go.Figure(data=[
+        go.Scatter(
+            x=xtime,
+            y=np.real(samples),
+            name='I',
+        ),
+        go.Scatter(
+            x=xtime,
+            y=np.imag(samples),
+            name='Q',
+        )
+    ])
+
+    fig.update_layout(
+        hovermode='x unified',
+        xaxis_tickformat='~s',
+        xaxis_ticksuffix='s',
+        yaxis_tickformat='~s',
+    )
+
+    return fig
+
+
 def draw_spectrogram_annotation(figure, annotation, frequency=None, time=None):
     y0 = annotation['core:sample_start']
     y1 = annotation['core:sample_count']
