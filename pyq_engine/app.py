@@ -205,10 +205,7 @@ def generate_graphs(filename, contents, fft_size, rf_freq, analyze, cursor):
 
     graphs = {}
 
-    content_type, content_string = contents.split(',')
-    d = io.BytesIO(base64.b64decode(content_string))
-    arc = sigmf.SigMFArchiveReader(archive_buffer=d)
-    sig = arc.sigmffile
+    sig = utils.load_sigmf_contents(contents)
 
     metadata = sig.get_global_info()
     if 'core:extensions' in metadata:

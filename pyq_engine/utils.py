@@ -1,6 +1,16 @@
+import io
+import sigmf
+import base64
 import pandas as pd
 import numpy as np
 from scipy import signal
+
+
+def load_sigmf_contents(contents):
+    content_type, content_string = contents.split(',')
+    d = io.BytesIO(base64.b64decode(content_string))
+    arc = sigmf.SigMFArchiveReader(archive_buffer=d)
+    return arc.sigmffile
 
 
 def samples_to_psd(samples, sample_rate, fc=0, nperseg=1024*8):
