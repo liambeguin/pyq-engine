@@ -4,7 +4,6 @@ import dash_bootstrap_components as dbc
 
 annotations = html.Div(
     [
-        dcc.Store(id='annotations-store'),
         dbc.Button(
             [
                 "Annotations",
@@ -48,11 +47,13 @@ def show_annotations_modal(n, is_open):
         Output("annotations", "children"),
         Output("annotations-count", "children"),
     ],
-    Input('annotations-store', 'data'),
+    Input('metadata-store', 'data'),
 )
-def update_annotations(annotations):
-    if annotations is None:
+def update_annotations(metadata):
+    if metadata is None:
         return 'open file to display annotations', ''
+
+    annotations = metadata['annotations']
 
     if len(annotations) == 0:
         return 'Collection contains no annotations', ''

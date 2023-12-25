@@ -5,7 +5,6 @@ import json
 
 metadata = html.Div(
     [
-        dcc.Store(id='metadata-store'),
         dbc.Button(
             "Metadata",
             id="metadata-button",

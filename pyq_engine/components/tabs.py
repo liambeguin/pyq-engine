@@ -43,41 +43,33 @@ def render_tab_content(active_tab, data):
 
 
 @callback(
-    [
         Output('graph-store', 'data'),
-        Output('metadata-store', 'data'),
-        Output('annotations-store', 'data'),
-    ],
     [
         Input('filename', 'filename'),
-        Input('filename', 'contents'),
+        Input('samples-store', 'data'),
+        Input('metadata-store', 'data'),
         Input('fft-size', 'value'),
         Input('rf-freq', 'on'),
         Input('do-analysis', 'on'),
         Input('cursor', 'value'),
     ],
 )
-def generate_graphs(filename, contents, fft_size, rf_freq, analyze, cursor):
+def generate_graphs(filename, store, metadata, fft_size, rf_freq, analyze, cursor):
     """
     This callback generates three simple graphs from random data.
     """
-    if not filename:
+    if not store:
         # generate empty graphs when app loads
-        return {k: go.Figure(data=[]) for k in ['spectrogram', 'frequency', 'time', 'iq']}, {}, []
+        return {k: go.Figure(data=[]) for k in ['spectrogram', 'frequency', 'time', 'iq']}
 
-    sigmf = utils.load_sigmf_contents(contents)
-    annotations = sigmf.get_annotations()
+    samples = utils.deserialize_samples(store)
+    samples = samples[cursor[0]:cursor[1]]
 
-    metadata = sigmf.get_global_info()
-    if 'core:extensions' in metadata:
-        del metadata['core:extensions']
-
-    samples = sigmf[cursor[0]:cursor[1]]
-    fc = sigmf.get_captures()[0]['core:frequency'] if rf_freq else None
+    fc = metadata['captures'][0]['core:frequency'] if rf_freq else None
 
     graphs = {}
-    graphs['spectrogram'] = plot.spectrogram(samples, sigmf, fc=fc, fft_size=fft_size, title=filename)
-    graphs['frequency'] = plot.frequencies(samples, sigmf, fc=fc, title=filename, analyze=analyze)
+    graphs['spectrogram'] = plot.spectrogram(samples, metadata, fc=fc, fft_size=fft_size, title=filename)
+    graphs['frequency'] = plot.frequencies(samples, metadata, fc=fc, title=filename, analyze=analyze)
     graphs['iq'] = plot.IQ(samples, title=filename)
 
-    return graphs, metadata, annotations
+    return graphs

@@ -7,6 +7,8 @@ from pyq_engine import utils
 
 upload = html.Div(
     [
+        dcc.Store(id='samples-store'),
+        dcc.Store(id='metadata-store'),
         dcc.Upload(
             id='filename',
             children=html.Div([
@@ -62,17 +64,38 @@ sample_slicer = html.Div(
 
 @callback(
     [
+        Output('samples-store', 'data'),
+        Output('metadata-store', 'data'),
+    ],
+    [
+        Input('filename', 'filename'),
+        Input('filename', 'contents'),
+    ],
+)
+def load_file(filename, contents):
+    if not filename:
+        return None, None
+
+    sigmf = utils.load_sigmf_contents(contents)
+    samples = sigmf[:]
+
+    return (
+        utils.serialize_samples(samples),
+        sigmf._metadata,
+    )
+
+
+@callback(
+    [
         Output("cursor", "max"),
         Output("cursor", "value"),
     ],
-    Input('filename', 'filename'),
-    Input('filename', 'contents'),
+    Input('samples-store', 'data'),
 )
-def update_freq_cursor(filename, contents):
-    if filename is None:
+def update_sample_slice(samples):
+    if samples is None:
         return 5000, [0, 5000]
 
-    sig = utils.load_sigmf_contents(contents)
-    count = sig.shape[0]
+    count = utils.deserialize_samples(samples).shape[0]
 
     return count, [0, count]
