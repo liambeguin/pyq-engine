@@ -12,6 +12,10 @@ def IQ(samples, title=None, decimate=10):
         x=np.real(samples),
         y=np.imag(samples),
         title=title,
+        labels={
+            'x': 'Re',
+            'y': 'Im',
+        },
     )
 
 
