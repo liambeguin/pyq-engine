@@ -1,3 +1,5 @@
+from . import controls
 from .annotations import annotations
 from .metadata import metadata
-from . import controls
+from .tabs import tabs
+from . import plot
