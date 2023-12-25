@@ -26,17 +26,17 @@ upload = html.Div(
 )
 
 
-fft_size_options = [2**i for i in range(5, 15)]
-fft_size = html.Div(
-    [
-        dbc.Label('FFT Size'),
-        dcc.Dropdown(
-            id='fft-size',
-            options=fft_size_options,
-            value=1024,
-        ),
-    ],
-)
+def fft_size(options):
+    return html.Div(
+        [
+            dbc.Label('FFT Size'),
+            dcc.Dropdown(
+                id='fft-size',
+                options=options,
+                value=1024,
+            ),
+        ],
+    )
 
 switches = html.Div(
     [
