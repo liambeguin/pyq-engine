@@ -16,7 +16,11 @@ from pyq_engine import utils
 
 
 fft_size_options = [2**i for i in range(5, 15)]
-app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+app = Dash(
+    __name__,
+    title='PYQ-Engine',
+    external_stylesheets=[dbc.themes.BOOTSTRAP],
+)
 
 controls = dbc.Card(
     [
