@@ -1,6 +1,8 @@
 from dash import callback, html, dcc, Input, Output, State
 import dash_bootstrap_components as dbc
 
+import json
+
 metadata = html.Div(
     [
         dcc.Store(id='metadata-store'),
@@ -46,16 +48,11 @@ def update_metadata(metadata):
     if metadata is None:
         return 'open file to display metadata'
 
-    children = []
-    for k, v in metadata.items():
-        children.append(
-            dbc.Row(
-                [
-                    dbc.Col(dbc.Label(k)),
-                    dbc.Col(dbc.Label(v)),
-                ],
-            ),
-        )
-
-    return dbc.Container(children)
-
+    return html.Code(
+        json.dumps(metadata, indent=4),
+        style={
+            'display': 'block',
+            'white-space': 'pre',
+            'overflow-x': 'scroll',
+        },
+    )
