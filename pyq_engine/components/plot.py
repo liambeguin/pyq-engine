@@ -144,7 +144,15 @@ def draw_frequency_bandwidths(figure, peaks):
 def frequencies(samples, metadata, fc, title=None, analyze=False):
     sample_rate = metadata['global']['core:sample_rate']
     f, psd = utils.samples_to_psd(samples, sample_rate, fc=fc)
-    fig = px.line(x=f, y=psd, title=title)
+    fig = px.line(
+        x=f,
+        y=psd,
+        title=title,
+        labels={
+            'x': 'Frequency',
+            'y': 'PSD',
+        },
+    )
 
     if analyze:
         peaks = utils.get_peaks(f, psd, prominence=5)
