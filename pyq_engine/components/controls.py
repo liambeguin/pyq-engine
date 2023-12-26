@@ -1,9 +1,8 @@
 from dash import callback, dcc, html, Input, Output, State
-import dash_daq as daq
 import dash_bootstrap_components as dbc
 
 from pyq_engine import utils
-from pyq_engine.components import warning
+from pyq_engine.components import warning, button
 
 
 upload = html.Div(
@@ -43,8 +42,8 @@ def fft_size(options):
 
 switches = html.Div(
     [
-        daq.BooleanSwitch(label='RF Frequencies', id='rf-freq', on=True),
-        daq.BooleanSwitch(label='Analysis', id='do-analysis', on=True),
+        button.OnOff(label='RF Frequencies', id='rf-freq', on=True),
+        button.OnOff(label='Enable Analysis', id='do-analysis', on=True),
     ],
 )
 

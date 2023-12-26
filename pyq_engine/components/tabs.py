@@ -55,8 +55,8 @@ def render_tab_content(active_tab, data):
         Input('samples-store', 'data'),
         Input('metadata-store', 'data'),
         Input('fft-size', 'value'),
-        Input('rf-freq', 'on'),
-        Input('do-analysis', 'on'),
+        Input(dict(type='pyq-engine-onoff-button', id='rf-freq'), 'n_clicks'),
+        Input(dict(type='pyq-engine-onoff-button', id='do-analysis'), 'n_clicks'),
         Input('cursor', 'value'),
     ],
 )
@@ -71,11 +71,11 @@ def generate_graphs(filename, store, metadata, fft_size, rf_freq, analyze, curso
     samples = utils.deserialize_samples(store)
     samples = samples[cursor[0]:cursor[1]]
 
-    fc = metadata['captures'][0]['core:frequency'] if rf_freq else None
+    fc = metadata['captures'][0]['core:frequency'] if rf_freq % 2 else 0
 
     graphs = {}
     graphs['spectrogram'] = plot.spectrogram(samples, metadata, fc=fc, fft_size=fft_size, title=filename)
-    graphs['frequency'] = plot.frequencies(samples, metadata, fc=fc, title=filename, analyze=analyze)
+    graphs['frequency'] = plot.frequencies(samples, metadata, fc=fc, title=filename, analyze=analyze % 2)
     graphs['time'] = plot.time(samples, metadata, title=filename)
     graphs['iq'] = plot.IQ(samples, title=filename)
 

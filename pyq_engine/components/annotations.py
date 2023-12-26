@@ -6,7 +6,7 @@ annotations = html.Div(
     [
         dbc.Button(
             [
-                "Annotations",
+                "Show Annotations",
                 dbc.Badge(id='annotations-count', color='danger', className="ms-1"),
             ],
             id="annotations-button",

@@ -6,7 +6,7 @@ import json
 metadata = html.Div(
     [
         dbc.Button(
-            "Metadata",
+            "Show Metadata",
             id="metadata-button",
             className="me-1",
             color="primary",
