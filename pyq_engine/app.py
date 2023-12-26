@@ -21,6 +21,7 @@ def main():
 
     controls = dbc.Card(
         [
+            components.warning.modal,
             components.controls.upload,
             html.Hr(),
             components.controls.fft_size(options.fft_size_options),

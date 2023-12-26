@@ -3,6 +3,7 @@ import dash_daq as daq
 import dash_bootstrap_components as dbc
 
 from pyq_engine import utils
+from pyq_engine.components import warning
 
 
 upload = html.Div(
@@ -66,6 +67,8 @@ sample_slicer = html.Div(
     [
         Output('samples-store', 'data'),
         Output('metadata-store', 'data'),
+        Output('warning-modal', 'is_open'),
+        Output('warning-modal', 'children'),
     ],
     [
         Input('filename', 'filename'),
@@ -73,15 +76,28 @@ sample_slicer = html.Div(
     ],
 )
 def load_file(filename, contents):
+    limit = int(1e6)
+    w = None
     if not filename:
-        return None, None
+        return None, None, False, []
 
-    sigmf = utils.load_sigmf_contents(contents)
+    try:
+        sigmf = utils.load_sigmf_contents(contents)
+    except Exception as e:
+        return (
+            None, None, True,
+            warning.warn('SigMF Error', 'Unable to open SigMFArchive: ' + str(e)),
+        )
+
     samples = sigmf[:]
+    if samples.shape[0] > limit:
+        w = warning.warn('SigMF Warning', f'Truncating samples for performance {samples.shape[0]} -> ({limit},)')
+        samples = samples[:limit]
 
     return (
         utils.serialize_samples(samples),
         sigmf._metadata,
+        w is not None, w,
     )
 
 
