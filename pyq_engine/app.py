@@ -43,12 +43,13 @@ def main():
             html.Hr(),
             dbc.Row(
                 [
-                    dbc.Col(controls, class_name='m-0 col-2'),
-                    dbc.Col(components.tabs(options.default_tab), class_name='m-0 col-10'),
+                    dbc.Col(controls, class_name='col-2'),
+                    dbc.Col(components.tabs(options.default_tab), class_name='col-10'),
                 ],
                 align='top',
             ),
         ],
+        style={'width': '95vw', 'height': '95vh'},
     )
 
     app.run(debug=options.debug, host='0.0.0.0')

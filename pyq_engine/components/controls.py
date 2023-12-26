@@ -12,7 +12,7 @@ upload = html.Div(
         dcc.Upload(
             id='filename',
             children=html.Div([
-                html.A('Upload SigMFArchive')
+                html.A('Upload Archive')
             ]),
             style={
                 'width': '100%',
