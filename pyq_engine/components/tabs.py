@@ -33,6 +33,7 @@ def tabs(default='spectrogram'):
 
 @callback(
     Output("tab-content", "children"),
+    Output("modal-fs", "children"),
     [Input("tabs", "active_tab"), Input('graph-store', 'data')],
 )
 def render_tab_content(active_tab, data):
@@ -43,9 +44,12 @@ def render_tab_content(active_tab, data):
     """
     if active_tab and data is not None:
         if active_tab in data.keys():
-            return dcc.Graph(figure=data[active_tab])
+            return (
+                dcc.Graph(figure=data[active_tab], style={'width': '80vw', 'height': '80vh'}),
+                dcc.Graph(figure=data[active_tab], style={'width': '100vw', 'height': '100vh'}),
+            )
 
-    return "No tab selected"
+    return "No tab selected", "No tab selected"
 
 
 @callback(

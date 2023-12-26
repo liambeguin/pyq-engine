@@ -47,6 +47,30 @@ switches = html.Div(
     ],
 )
 
+fullscreen = html.Div(
+    [
+        dbc.Button(
+            'Fullscreen', id='open-fs',
+            style={
+                'width': '100%',
+                'margin-bottom': '10px',
+            },
+        ),
+        dbc.Modal(id='modal-fs', fullscreen=True),
+    ],
+)
+
+@callback(
+    Output("modal-fs", "is_open"),
+    Input("open-fs", "n_clicks"),
+    State("modal-fs", "is_open"),
+)
+def toggle_modal(n, is_open):
+    if n:
+        return not is_open
+    return is_open
+
+
 sample_slicer = html.Div(
     [
         dbc.Label('Sample Slice'),

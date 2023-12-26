@@ -29,6 +29,7 @@ def main():
             components.controls.sample_slicer,
             html.Hr(),
             components.controls.switches,
+            components.controls.fullscreen,
             html.Hr(),
             components.metadata,
             components.annotations,
