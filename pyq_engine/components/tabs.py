@@ -10,7 +10,6 @@ from pyq_engine.components import plot
 def tabs(default='spectrogram'):
     return html.Div(
     [
-        dcc.Store(id='graph-store'),
         dbc.Tabs(
             [
                 dbc.Tab(label='Spectrogram', tab_id='spectrogram'),
@@ -21,7 +20,13 @@ def tabs(default='spectrogram'):
             id='tabs',
             active_tab=default,
         ),
-        html.Div(id="tab-content"),
+        dbc.Spinner(
+            [
+                dcc.Store(id='graph-store'),
+                html.Div(id="tab-content"),
+            ],
+            color='primary',
+        ),
     ],
 )
 
