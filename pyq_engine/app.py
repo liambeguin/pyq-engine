@@ -8,7 +8,7 @@ from pyq_engine import components
 
 def main():
     parser = argparse.ArgumentParser('pyq-engine')
-    parser.add_argument('--debug', default=False, action='store_true')
+    parser.add_argument('--debug', default=True, action=argparse.BooleanOptionalAction)
     parser.add_argument('--default-tab', default='spectrogram', choices=['spectrogram', 'frequency', 'iq'])
     parser.add_argument('--fft-size-options', default=[2**i for i in range(5, 15)])
     options = parser.parse_args()
