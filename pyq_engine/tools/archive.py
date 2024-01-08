@@ -4,7 +4,7 @@ from pathlib import Path
 
 
 def main():
-    parser = argparse.ArgumentParser('sig-archive')
+    parser = argparse.ArgumentParser('pyq-archive')
     parser.add_argument('metafile', type=Path)
     parser.add_argument('--outputdir', '-o', type=Path, default='.')
     options = parser.parse_args()
