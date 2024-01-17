@@ -55,9 +55,9 @@ def time(samples, metadata, title=None):
 
     fig.update_layout(
         hovermode='x unified',
-        xaxis_tickformat='~s',
+        xaxis_exponentformat='SI',
         xaxis_ticksuffix='s',
-        yaxis_tickformat='~s',
+        yaxis_exponentformat='SI',
     )
 
     return fig
@@ -109,9 +109,9 @@ def spectrogram(samples, metadata, fc, fft_size, title=None):
     )
     fig.update_layout(
         hovermode='x unified',
-        xaxis_tickformat='~s',
+        xaxis_exponentformat='SI',
         xaxis_ticksuffix='Hz',
-        yaxis_tickformat='~s',
+        yaxis_exponentformat='SI',
         yaxis_ticksuffix='s',
         coloraxis={
             'colorscale': 'viridis',
@@ -119,7 +119,7 @@ def spectrogram(samples, metadata, fc, fft_size, title=None):
     )
 
     fig.update_coloraxes(
-        colorbar_tickformat='~s',
+        colorbar_exponentformat='SI',
         colorbar_ticksuffix='dB',
     )
 
@@ -205,9 +205,9 @@ def frequencies(samples, metadata, fc, title=None, analyze=False):
 
     fig.update_layout(
         hovermode='x unified',
-        xaxis_tickformat='~s',
+        xaxis_exponentformat='SI',
         xaxis_ticksuffix='Hz',
-        yaxis_tickformat='~s',
+        yaxis_exponentformat='SI',
         yaxis_ticksuffix='dB',
     )
 
