@@ -64,7 +64,7 @@ def render_tab_content(active_tab, data):
         Input('cursor', 'value'),
     ],
 )
-def generate_graphs(filename, store, metadata, fft_size, rf_freq, analyze, cursor):
+def generate_graphs(filename, store, metadata, nperseg, rf_freq, analyze, cursor):
     """
     This callback generates three simple graphs from random data.
     """
@@ -78,8 +78,8 @@ def generate_graphs(filename, store, metadata, fft_size, rf_freq, analyze, curso
     fc = metadata['captures'][0]['core:frequency'] if rf_freq % 2 else 0
 
     graphs = {}
-    graphs['spectrogram'] = plot.spectrogram(samples, metadata, fc=fc, fft_size=fft_size, title=filename)
-    graphs['frequency'] = plot.frequencies(samples, metadata, fc=fc, title=filename, analyze=analyze % 2)
+    graphs['spectrogram'] = plot.spectrogram(samples, metadata, fc=fc, nperseg=nperseg, title=filename)
+    graphs['frequency'] = plot.frequencies(samples, metadata, fc=fc, nperseg=nperseg, title=filename, analyze=analyze % 2)
     graphs['time'] = plot.time(samples, metadata, title=filename)
     graphs['iq'] = plot.IQ(samples, title=filename)
 

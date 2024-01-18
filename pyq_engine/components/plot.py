@@ -88,12 +88,12 @@ def draw_spectrogram_annotation(figure, annotation, frequency=None, time=None):
     ))
 
 
-def spectrogram(samples, metadata, fc, fft_size, title=None):
+def spectrogram(samples, metadata, fc, nperseg, title=None):
     sample_count = len(samples)
     sample_rate = metadata['global']['core:sample_rate']
 
-    freq, spectrogram = utils.sigmf_to_spectrogram(samples, sample_rate, fft_size=fft_size, fc=fc)
-    ytime = np.linspace(0.0, float(sample_count / sample_rate), num=sample_count // fft_size)
+    freq, spectrogram = utils.sigmf_to_spectrogram(samples, sample_rate, nperseg=nperseg, fc=fc)
+    ytime = np.linspace(0.0, float(sample_count / sample_rate), num=sample_count // nperseg)
 
     fig = px.imshow(
         spectrogram,
@@ -185,9 +185,9 @@ def draw_frequency_bandwidths(figure, peaks):
     )
 
 
-def frequencies(samples, metadata, fc, title=None, analyze=False):
+def frequencies(samples, metadata, fc, nperseg, title=None, analyze=False):
     sample_rate = metadata['global']['core:sample_rate']
-    f, psd = utils.samples_to_psd(samples, sample_rate, fc=fc)
+    f, psd = utils.samples_to_psd(samples, sample_rate, fc=fc, nperseg=nperseg)
     fig = px.line(
         x=f,
         y=psd,

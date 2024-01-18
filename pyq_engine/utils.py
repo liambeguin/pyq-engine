@@ -32,15 +32,15 @@ def samples_to_psd(samples, sample_rate, fc=0, nperseg=1024*8):
     return f, psd_db
 
 
-def sigmf_to_spectrogram(samples, sample_rate, fft_size=1024, fc=0):
-    num_rows = len(samples) // fft_size # // is an integer division which rounds down
-    spectrogram = np.zeros((num_rows, fft_size))
+def sigmf_to_spectrogram(samples, sample_rate, nperseg=1024, fc=0):
+    num_rows = len(samples) // nperseg # // is an integer division which rounds down
+    spectrogram = np.zeros((num_rows, nperseg))
 
     for i in range(num_rows):
-        start = i * fft_size
-        stop = (i + 1) * fft_size
+        start = i * nperseg
+        stop = (i + 1) * nperseg
 
-        f, spectrogram[i,:] = samples_to_psd(samples[start:stop], sample_rate, fc, nperseg=fft_size)
+        f, spectrogram[i,:] = samples_to_psd(samples[start:stop], sample_rate, fc, nperseg=nperseg)
 
     return f, spectrogram
 
