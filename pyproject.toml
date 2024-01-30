@@ -11,10 +11,12 @@ dash-daq = "^0.5.0"
 pandas = "^2.1.0"
 SigMF = "^1.1.1"
 scipy = "^1.11.3"
+dash-ag-grid = "^2.4.0"
 
 [tool.poetry.scripts]
 pyq-engine = "pyq_engine.app:main"
 pyq-archive = "pyq_engine.tools.archive:main"
+pyq-explorer = "pyq_engine.tools.explorer:main"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2"
